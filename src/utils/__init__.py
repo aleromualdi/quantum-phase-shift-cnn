@@ -87,60 +87,6 @@ class MathTextSciFormatter(mticker.Formatter):
         return "${}$".format(s)
 
 
-def add_subplot(axs, ax_idx, y_test, predictions, history=None, epoch_xlim=None, epoch_ylim=None, str_labels=None, title=None, nticks=None):
-
-    lb1, lb2 = str_labels
-
-    idx = ax_idx
-
-    #err = mean_absolute_error(y_test, predictions)
-    err = mean_absolute_percentage_error(y_test, predictions)
-
-    if nticks:
-        axs[idx, 0].locator_params(axis='y', nbins=nticks)
-        axs[idx, 0].locator_params(axis='x', nbins=nticks)
-
-    axs[idx, 0].scatter(y_test, predictions, label='$\delta_0$', color='#595959')
-    axs[idx, 0].set_xlabel('True $\delta_0$ [rad]')
-    axs[idx, 0].set_ylabel('Predicted $\delta_0$ [rad]')
-    axs[idx, 0].grid(linewidth=0.5, linestyle='--')
-    axs[idx, 0].text(0.1, 0.9, lb1, transform=axs[idx, 0].transAxes, size=12)
-    #axs[idx, 0].text(0.34, 0.1, "MAE ="+"$ {0:s}$".format(as_si(err, 2)), transform=axs[idx, 0].transAxes, size=12)
-    axs[idx, 0].text(0.34, 0.1, "MAPE ="+" {:.2f} $\%$".format(err), transform=axs[idx, 0].transAxes, size=12)
-    axs[idx, 0].plot([0, 1], [0, 1], transform=axs[idx, 0].transAxes, linestyle='dashed', color='k')
-
-    #axs[0, 0].xaxis.set_major_formatter(MathTextSciFormatter("%1.1e"))
-    #axs[0, 0].yaxis.set_major_formatter(MathTextSciFormatter("%1.1e"))
-
-    adjust_spines(axs[idx, 0], ['bottom', 'left'], pos=0.5)
-
-    if history:
-
-        #axs[idx, 1].plot(history['mse'], label='train')
-        axs[idx, 1].plot(history['val_mse'], label='val. set')
-        axs[idx, 1].set_ylabel('MSE')
-        axs[idx, 1].set_xlabel('epoch')
-        axs[idx, 1].legend(loc='upper right', frameon=False)
-        axs[idx, 1].axhline(y=0, color='grey', linestyle='--', linewidth=0.8)
-        #axs[idx, 1].yaxis.set_major_formatter(MathTextSciFormatter("%1.1e"))
-
-        for spine in ['top', 'right']:
-            axs[idx, 1].spines[spine].set_visible(False)
-
-        #adjust_spines(axs[idx, 1], ['bottom', 'left'], pos=0)
-
-        if epoch_xlim:
-            axs[idx, 1].set_xlim(epoch_xlim)
-
-        if epoch_ylim:
-            axs[idx, 1].set_ylim(epoch_ylim)
-        else:
-            # max_loss = max(max(history['mse']), max(history['val_mse']))
-            max_loss = max(history['val_mse'])
-            axs[idx, 1].set_ylim(0, max_loss+max_loss/100*10)
-
-        axs[idx, 1].text(0.15, 0.9, lb2, transform=axs[idx, 1].transAxes, size=12)
-
 
 def set_size(width=345, fraction=1, subplots=(1, 1)):
     """Set figure dimensions to avoid scaling in LaTeX.
@@ -180,3 +126,48 @@ def set_size(width=345, fraction=1, subplots=(1, 1)):
     fig_height_in = fig_width_in * golden_ratio * (subplots[0] / subplots[1])
 
     return (fig_width_in, fig_height_in)
+
+
+def add_scatterplot(axs, ax_idx, y_test, predictions, str_label=None, nticks=None):
+
+    err = mean_absolute_percentage_error(y_test, predictions)
+
+    if nticks:
+        axs[ax_idx].locator_params(axis='y', nbins=nticks)
+        axs[ax_idx].locator_params(axis='x', nbins=nticks)
+
+    axs[ax_idx].scatter(y_test, predictions, label='$\delta_0$', color='#595959')#, s=10.)
+    axs[ax_idx].set_xlabel('True $\delta_0$ [rad]')
+    axs[ax_idx].set_ylabel('Predicted $\delta_0$ [rad]')
+    axs[ax_idx].text(0.1, 0.85, str_label, transform=axs[ax_idx].transAxes, size=12)
+    axs[ax_idx].text(
+        0.36, 0.1, "MAPE ="+" {:.2f} $\%$".format(err), transform=axs[ax_idx].transAxes, size=12)
+    axs[ax_idx].axline((1, 1), slope=1, linestyle='dashed', color='k')
+    axs[ax_idx].set_xlim(min(y_test), max(y_test))
+    axs[ax_idx].set_ylim(min(predictions), max(predictions))
+    axs[ax_idx].grid(linewidth=0.5, linestyle='--')
+
+
+def add_history_plot(ax, history, str_label=None, epoch_xlim=None, epoch_ylim=None):
+
+    ax.plot(history['loss'], label='val. set')
+    ax.set_ylabel('MSE')
+    ax.set_xlabel('epoch')
+    ax.legend(loc='upper right', frameon=False)
+    ax.axhline(y=0, color='grey', linestyle='--', linewidth=0.8)
+
+    for spine in ['top', 'right']:
+        ax.spines[spine].set_visible(False)
+
+    if epoch_xlim:
+        ax.set_xlim(epoch_xlim)
+
+    if epoch_ylim:
+        ax.set_ylim(epoch_ylim)
+    #else:
+        #max_loss = max(history['loss'])
+        #ax.set_ylim(0, max_loss+max_loss/100*10)
+
+    ax.text(
+        0.15, 0.9, str_label, transform=ax.transAxes, size=12)
+

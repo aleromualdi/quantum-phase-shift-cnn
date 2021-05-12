@@ -15,6 +15,9 @@ from models import cnn, cnn_dropout
 if not os.path.exists('output/'):
     os.makedirs('output/')
 
+import tensorflow as tf
+tf.random.set_seed(123)
+
 
 # using TF as descriptor.
 sources = {
@@ -33,7 +36,8 @@ def make_data(k):
         path, sep="\s+", names=["k", "q", "delta_0", "delta_0_2", "delta_0_3"])
 
     # make pontential data
-    r = np.linspace(0.1, 8, 100)
+    #r = np.linspace(0.1, 8, 100)
+    r = np.arange(0.1, 6, 0.06)
 
     V_vec = []
     for i in range(len(df)):
@@ -76,10 +80,10 @@ def train(k):
     history = model.fit(
         X_train,
         y_train,
-        batch_size=16,
-        epochs=5000,
+        batch_size=32,
+        epochs=6000,
         validation_split=0.3,
-        verbose=1
+        verbose=1,
         )
 
     model.save('output/'+model_name+'/model_k{}.h5'.format(k))

@@ -15,6 +15,10 @@ from models import cnn
 if not os.path.exists('output/'):
     os.makedirs('output/')
 
+import tensorflow as tf
+tf.random.set_seed(132)
+
+
 
 sources = {
     '0.1': '../../data/yukawa/k=0.1.txt',
@@ -35,7 +39,7 @@ def make_data(k):
     print('Making potential images for k=%s:'%k)
     print('Data length=', len(df))
 
-    r = np.linspace(0.1, 8, 200)
+    r = np.arange(0.01, 6, 0.06)
 
     V_vec = []
     for i in range(len(df)):
@@ -64,7 +68,8 @@ def train(k):
     y = np.array(y)
  
     # train / test split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=3)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=3)
 
     # load the model
     model, model_name = cnn(input_shape=(X.shape[1], 1))
@@ -72,14 +77,26 @@ def train(k):
     if not os.path.exists('output/'+model_name):
         os.makedirs('output/'+model_name)
 
+    # reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(
+    #     monitor="val_loss",
+    #     factor=0.1,
+    #     patience=10,
+    #     verbose=0,
+    #     mode="auto",
+    #     min_delta=0.001,
+    #     cooldown=0,
+    #     min_lr=1e-06,
+    # )
+
     # fit model
     history = model.fit(
         X_train,
         y_train,
-        batch_size=16,
+        batch_size=32,
         epochs=100,
         validation_split=0.3,
-        verbose=1
+        verbose=1,
+        #callbacks=[reduce_lr]
         )
 
     model.save('output/'+model_name+'/model_k{}.h5'.format(k))

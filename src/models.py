@@ -2,7 +2,7 @@
 import tensorflow as tf
 
 
-def cnn(input_shape, loss='mse', lr=1e-04, metrics=['mse', 'mae'], model_name="cnn"):
+def cnn(input_shape, loss='mse', lr=1e-04, model_name="cnn"):
     '''
     CNN model based on convolution layer + max pooling layer.
     '''
@@ -18,7 +18,7 @@ def cnn(input_shape, loss='mse', lr=1e-04, metrics=['mse', 'mae'], model_name="c
         tf.keras.layers.Conv1D(256, 3, strides=1, activation='relu'),
         tf.keras.layers.MaxPooling1D(2),
         tf.keras.layers.Conv1D(256, 3, strides=1, activation='relu'),
-        tf.keras.layers.MaxPooling1D(2),
+        tf.keras.layers.MaxPooling1D(2, padding='same'),
 
         tf.keras.layers.Dense(1024, activation='relu'),
         tf.keras.layers.Dense(1)])
@@ -26,13 +26,12 @@ def cnn(input_shape, loss='mse', lr=1e-04, metrics=['mse', 'mae'], model_name="c
     model.compile(
             optimizer=tf.keras.optimizers.Adam(lr=lr),
             loss=loss,
-            metrics=metrics
     )
 
     return model, model_name
 
 
-def cnn_dropout(input_shape, loss='mse', lr=1e-04, metrics=['mse', 'mae'], model_name="cnn_dropout"):
+def cnn_dropout(input_shape, loss='mse', lr=1e-04, model_name="cnn_dropout"):
     '''
     CNN model based on convolution layer + max pooling layer + dropout layer.
     '''
@@ -57,7 +56,6 @@ def cnn_dropout(input_shape, loss='mse', lr=1e-04, metrics=['mse', 'mae'], model
     model.compile(
             optimizer=tf.keras.optimizers.Adam(lr=lr),
             loss=loss,
-            metrics=metrics
     )
 
     return model, model_name

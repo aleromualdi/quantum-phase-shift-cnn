@@ -15,6 +15,9 @@ from models import cnn
 if not os.path.exists('output/'):
     os.makedirs('output/')
 
+import tensorflow as tf
+tf.random.set_seed(123)
+
 
 sources = {
     '0.1': '../../data/double_yukawa/k=0.1.txt',
@@ -30,12 +33,13 @@ def make_data(k):
     df = pd.read_csv(
         path, sep="\s+", names=["k", "q", "delta_0", "delta_1", "delta_2"])
 
-    r = np.linspace(0.1, 8, 100)
+    r = np.arange(0.1, 6, 0.06)
 
     V_vec = []
     for i in range(len(df)):
         q = df.iloc[i]['q']
-        v = np.array([double_yukawa(q, 2*q, ri, V_01=10, V_02=20) for ri in r])
+        v = np.array([double_yukawa(
+            q, 2*q, ri, V_01=10, V_02=20) for ri in r])
         V_vec.append(v)
     
     df['V'] = V_vec
@@ -59,7 +63,8 @@ def train(k):
     y = np.array(y)
  
     # train / test split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=3)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=3)
     
     # load the model
     model, model_name = cnn(input_shape=(X.shape[1], 1))
@@ -71,10 +76,10 @@ def train(k):
     history = model.fit(
         X_train,
         y_train,
-        batch_size=16,
+        batch_size=32,
         epochs=100,
         validation_split=0.3,
-        verbose=1
+        verbose=1,
         )
 
     model.save('output/'+model_name+'/model_k{}.h5'.format(k))
