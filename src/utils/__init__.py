@@ -136,19 +136,19 @@ def add_scatterplot(axs, ax_idx, y_test, predictions, str_label=None, nticks=Non
         axs[ax_idx].locator_params(axis='y', nbins=nticks)
         axs[ax_idx].locator_params(axis='x', nbins=nticks)
 
-    axs[ax_idx].scatter(y_test, predictions, label='$\delta_0$', color='#595959')#, s=10.)
+    axs[ax_idx].scatter(y_test, predictions, label='$\delta_0$', color='#595959')
     axs[ax_idx].set_xlabel('True $\delta_0$ [rad]')
     axs[ax_idx].set_ylabel('Predicted $\delta_0$ [rad]')
     axs[ax_idx].text(0.1, 0.85, str_label, transform=axs[ax_idx].transAxes, size=12)
     axs[ax_idx].text(
-        0.36, 0.1, "MAPE ="+" {:.2f} $\%$".format(err), transform=axs[ax_idx].transAxes, size=12)
+        0.33, 0.1, "MAPE ="+" {:.2f} $\%$".format(err), transform=axs[ax_idx].transAxes, size=12)
     axs[ax_idx].axline((1, 1), slope=1, linestyle='dashed', color='k')
     axs[ax_idx].set_xlim(min(y_test), max(y_test))
     axs[ax_idx].set_ylim(min(predictions), max(predictions))
     axs[ax_idx].grid(linewidth=0.5, linestyle='--')
 
 
-def add_history_plot(ax, history, str_label=None, epoch_xlim=None, epoch_ylim=None):
+def add_history_plot(ax, history, str_label=None, epoch_xlim=None, epoch_ylim=None, y_log_scale=False):
 
     ax.plot(history['loss'], label='val. set')
     ax.set_ylabel('MSE')
@@ -167,6 +167,8 @@ def add_history_plot(ax, history, str_label=None, epoch_xlim=None, epoch_ylim=No
     #else:
         #max_loss = max(history['loss'])
         #ax.set_ylim(0, max_loss+max_loss/100*10)
+    if y_log_scale:
+        ax.set_yscale('log')
 
     ax.text(
         0.15, 0.9, str_label, transform=ax.transAxes, size=12)
