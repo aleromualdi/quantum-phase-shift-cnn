@@ -1,6 +1,9 @@
 # quantum-phase-shift-cnn
 
-This repository hosts the code for training a Convolutional Neural Network model (CNN) for learning the Quantum Scattering Phase Shifts in presence of potentials...
+This repository hosts the code for training a Convolutional Neural Network model (CNN) for learning the phase shifts in s-wave caused by different three-dimensional spherically symmetric potentials at fixed collision energy.
+
+https://arxiv.org/abs/2106.16152
+
 
 Authors: <br/>
 Alessandro Romualdi (alessandro.romu@gmail.com) <br/>
