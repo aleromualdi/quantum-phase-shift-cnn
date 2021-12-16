@@ -8,63 +8,6 @@ from tensorflow.keras import layers
 rmse = tf.keras.metrics.RootMeanSquaredError()
 
 
-def cnn_mills(input_shape, learning_rate=0.001, rho=0.95, epsilon=1e-07, loss='mse', metrics=[rmse, 'mae']):
-    ''' Model use by Mills et al. in this work '''
-    model = keras.Sequential([
-        #layers.experimental.preprocessing.Rescaling(1./255, input_shape=(255, 1)),
-        
-        layers.Input(shape=input_shape),
-        layers.Conv1D(
-            filters=64,
-            kernel_size=3,
-            strides=2,
-            padding='same',
-            activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        #layers.Dropout(0.2)
-        layers.Conv1D(64, 3, strides=2, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        #layers.Dropout(0.2)
-        layers.Conv1D(64, 3, strides=2, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        #layers.Dropout(0.2)
-        layers.Conv1D(64, 3, strides=2, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        #layers.Dropout(0.2)
-        layers.Conv1D(64, 3, strides=2, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        #layers.Dropout(0.2)
-        layers.Conv1D(64, 3, strides=2, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        #layers.Dropout(0.2)
-        layers.Conv1D(64, 3, strides=2, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        layers.Conv1D(16, 4, strides=1, padding='same', activation='relu'),
-        #layers.Dropout(0.2)
-        layers.Dense(1024, activation='relu'),
-        layers.Dense(units=1)
-    ])
-
-    optimizer = tf.keras.optimizers.Adadelta(
-        learning_rate=learning_rate,
-        rho=rho,
-        epsilon=epsilon,
-        name='Adadelta')
-
-    model.compile(
-        optimizer=optimizer,
-        loss=loss,
-        metrics=metrics)
-
-    return model
-
-
 def cnn(input_shape, loss='mse', metrics=['mse', rmse, 'mae'],  name='cnn' ):
     '''
     CNN model based on convolution layer + max pooling layer
