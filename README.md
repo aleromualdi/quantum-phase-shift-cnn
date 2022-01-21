@@ -1,8 +1,7 @@
 # quantum-phase-shift-cnn
 
 This repository hosts the code for training a Convolutional Neural Network model (CNN) for learning the phase shifts in s-wave caused by different three-dimensional spherically symmetric potentials at fixed collision energy.
-
-https://arxiv.org/abs/2106.16152
+The work was published in The European Physical Journal B: https://doi.org/10.1140/epjb/s10051-021-00261-1
 
 
 Authors: <br/>
